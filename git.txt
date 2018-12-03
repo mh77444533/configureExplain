@@ -1,0 +1,243 @@
+git 官网地址  ： https://git-scm.com/
+
+git安装完了了
+	git在本地结构
+	工作区(写代码)  	暂存区(临时存储) 	本地库(历史版本)  
+	工作区(写代码)  --git add-->	 暂存区(临时存储) --git commit-->	本地库(历史版本)  
+	
+Git 和代码托管中心
+	代码托管中心的任务：维护远程库
+	局域网环境下
+		GitLab 服务器
+		
+	外网环境下
+		GitHub  (在国外访问慢点)
+		码云	(在国内访问快点)	
+		
+本地库和远程库
+	团队内部协作
+		
+	跨团队协作
+		
+		
+4.Git命令行操作
+	4.1 本地库初始化			在项目中 .git就是本地创库
+		命令 ：git add
+		.git目录中存放的是本地库相关的子目录和文件，不要删除不要胡乱修改
+		
+	4.2	设置签名
+		形式：
+			用户名：	tom
+			Email地址：	goodMorning@126.com
+			作用：区分不同开人员的身份，不会计较邮箱的真实性 可行性 甚至不存在都可以
+			辨析：这里设置的签名和登录远程库(代码托管中心)的账号，密码没有任何关系
+			命令：
+				项目级别(或者 仓库级别)：仅在当前本地库范围有效 
+					 git config user.name tom_pro
+					 git config user.email goodMorning@126.com
+					 签名信息保存的位置： ./git/config 文件
+				系统用户级别 ：登录当前操作系统的用户的范围	
+					 git config --global user.name tom_pro
+					 git config --global user.email goodMorning@126.com
+					 签名信息保存的位置：系统的家目录中  cat ~/.gitconfig
+				优先级：就近原则，项目级别优先于系统用户级别。二者同时存在，会采用项目级别的签名
+						二者都没有时，不允许提交信息
+			
+	4.3基本操作
+		4.3.1	状态查看操作		:	git status	查看工作区 暂存区状态
+		4.3.2	添加操作			:	git add [file name]	 将工作区“新建/修改” 添加到暂存区
+		4.3.3	提交操作			:	git commit -m "commit message" [file name]	将暂存区的内容提交到本地库
+		4.3.4	查看历史操作		:	git log  /git log --pretty=oneline  /git log --oneline(只能显示之前的版本)
+										git reflog(可以看到 HEAD 指针) 
+		4.3.5	前进后退			:
+					基于索引值操作		：git reset --hard [局部索引值]     	/局部索引值 可以用 git reflog 查询
+					使用^符号			：(只能后退) git reset --hard HEAD^^^   /^ 有几个就退几步，
+					使用~符号			：(只能后退)git reset --hard HEAD~3				/后退三步
+					
+				reset命令的三个参数对比
+					--soft	：仅仅在本地库移动HEAD指针
+					--mined	：在本地库移动HEAD指针，重置暂存区
+					--hard	：在本读库移动HEAD指针，重置暂存区，重置工作区
+					
+		4.3.6	删除文件并找回		: 删除前 文件存在时的状态提交到了本地库  git reset --hard [指针位置] /HEAD是当前指针位置
+						删除操作已经提交到本地库 ： 指针位置指向历史记录
+						删除操作尚未提交到本地库 :	(在暂存区时) 指针位置使用HEAD 
+						
+		4.3.7	比较文件差异		：
+						git diff [file name]	:	将工作区的文件和暂存区进行比较
+						git diff [本地库中历史版本] [file name]  : 将工作区中的文件和本地库历史记录比较
+						git diff		：不指定文件名  就是比较工作区中左右的文件
+		
+	4.4 分支管理 	
+				：在版本控制过程中，使用多条线同时推进多个任务
+			好处：同时并行推进多个功能开放，提高效率。		
+			
+		创建分支 ：git branch [分支名] 
+		查看分支 ：git branch -v
+		切换分支 ：git checkout [分支名] 
+		合并分支 ：
+			第一步 ：切换到接受修改的分支上 (被合并，增加新内容)上   git checkout [分支名]
+			第二步 ：执行 merge命令   git merge [分支名]
+				
+				将maomao分支修改的内容  合并到master上 操作步骤
+				git checkout [master]； git merge [maomao]
+		
+		解决冲突 ：当两个分支合并时，同一个位置都做修改时，就会产生冲突，需要手动合并 确定使用哪个文件
+						<<<<<<< HEAD
+						当前分支修改的内容
+						=======
+						另一分支修改的内容(这里是master分支)
+						>>>>>>> master
+					以上就是文件内容冲突的形式，这里需要手动去修改  选择哪个修改的内容
+					
+					修改完以后  一次  git add [file name]；  git commit -m “日志” 注意这里不带文件名
+			
+			
+	4.5github 登录网站 ：https://github.com/login
+				git remote -v 查看本地远程地址别名
+				git remote add origin https://github.com/mh77444533/microservicecloud-config.git  添加远程库 别名
+			推送远程仓库  git push [别名or 远程仓库地址] [分支名]
+						
+			克隆远程库  git clone 远程地址			
+					
+			拉取 : pull = fetch + merge
+					git fetch [远程库地址别名] [分支名]  : 只下载远程库到本地 ，不修改本地库
+ 					git merge [远程库地址别名]/[分支名]	 :	把远程库某分支下 合并到本地库
+						
+					git pull [远程库地址别名] [分支名]
+						
+		
+		IDE工具集成git时，工程需要忽略一些文件
+		
+		在C:/Users/Administrator/.gitconfig文件中 添加
+			[core]
+				excludesfile=C:/Users/Administrator/Java.gitignore
+				[路径中一定要使用"/",不能使用"\"]
+		在C:/Users/Administrator路径创建	Java.gitignore 添加提交工程师忽略的文件配置
+		
+		忽略的官方配置信息
+		https://github.com/github/gitignore
+		https://github.com/github/gitignore/blob/master/Java.gitignore
+		
+
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
